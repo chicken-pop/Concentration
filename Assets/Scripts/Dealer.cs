@@ -41,10 +41,6 @@ public class Dealer : MonoBehaviour
     private void Start()
     {
         Deck.GetDeck();
-        /*
-         Debug.Log($"スート: {Deck.CardDeck.FirstOrDefault().CardSuit}" +
-            $"数字:{Deck.CardDeck.FirstOrDefault().Number}");
-        */
 
         //ラムダ式でboolを判定し、List内に判定条件に合致するかtrueかfalseで返す
         var clubCards = Deck.CardDeck.Where(card => card.CardSuit == Card.Suit.Club).ToList();
@@ -69,11 +65,28 @@ public class Dealer : MonoBehaviour
                 {
                     //Playerのターンだったら
                     case Turn.Player:
+                        Debug.Log(cardImage);
                         Player.CardChoice(card,cardImage);
+                        if (!Player.IsMyTurn)
+                        {
+                            //選択されたカードを裏向ける
+                            cardImage.sprite = CardAtlas.GetSprite($"Card_54");
+                            Player.currentChoiceCardImage.sprite = CardAtlas.GetSprite($"Card_54");
+                            ActionTurn = Turn.CPU;
+                            return;
+                        }
                         break;
                    　//CPUのターンだったら
                     case Turn.CPU:
                         CPU.CardChoice(card,cardImage);
+                        if (!CPU.IsMyTurn)
+                        {
+                             //選択されたカードを裏向ける
+                            cardImage.sprite = CardAtlas.GetSprite($"Card_54");
+                            CPU.currentChoiceCardImage.sprite = CardAtlas.GetSprite($"Card_54");
+                            ActionTurn = Turn.Player;
+                            return;
+                        }
                         break;
                 }
 
