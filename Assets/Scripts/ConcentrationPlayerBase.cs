@@ -35,6 +35,8 @@ public class ConcentrationPlayerBase : MonoBehaviour
 
             //自分のターンは続行
             IsMyTurn = true;
+            //スコアの加算
+            Score += 2;
            
         }
         else
