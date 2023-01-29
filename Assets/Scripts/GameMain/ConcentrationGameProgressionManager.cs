@@ -30,7 +30,7 @@ public class ConcentrationGameProgressionManager : MonoBehaviour
         CPUCardIsComputerChoice
     }
 
-    private float choiceTime = 1.0f;
+    private float choiceTime = 1.5f;
 
     private bool IsCPUChoice;
 
@@ -59,25 +59,25 @@ public class ConcentrationGameProgressionManager : MonoBehaviour
                         choiceTime -= Time.deltaTime;
                         if (choiceTime < 0)
                         {
-                            var randChoice = Random.Range(0, Dealer.GetCardBGRoot.GetComponentsInChildren<Button>().Length+1);
+                            var randChoice = Random.Range(0, Dealer.GetCardBGRoot.GetComponentsInChildren<CardButtonExtension>().Length+1);
 
                             var randCount = 0;
 
                             IsCPUChoice = false;
 
-                            foreach(var card in Dealer.GetCardBGRoot.GetComponentsInChildren<Button>())
+                            foreach(var card in Dealer.GetCardBGRoot.GetComponentsInChildren<CardButtonExtension>())
                             {
                                 randCount++;
-                                if (card.image != Dealer.GetCPUConcentrationPlayer.currentChoiceCardImage)
+                                if (card.GetCardImage != Dealer.GetCPUConcentrationPlayer.currentChoiceCardImage)
                                 {
                                     if (card.gameObject.activeSelf && !IsCPUChoice && randCount == randChoice)
                                     {
-                                        card.onClick.Invoke();
+                                        card.OnPointerClick(null);
                                         IsCPUChoice = true;
                                     }
                                 }
                             }
-                            choiceTime = 1f;
+                            choiceTime = 1.5f;
                         }
                     }
                 }

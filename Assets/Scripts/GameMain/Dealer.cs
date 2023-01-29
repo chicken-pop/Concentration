@@ -65,6 +65,9 @@ public class Dealer : MonoBehaviour
     {
         Deck.GetDeck();
 
+        Player.PlayerInitialize(CardAtlas.GetSprite($"Card_54"), TurnChange);
+        CPU.PlayerInitialize(CardAtlas.GetSprite($"Card_54"), TurnChange);
+
         //ラムダ式でboolを判定し、List内に判定条件に合致するかtrueかfalseで返す
         var clubCards = Deck.CardDeck.Where(card => card.CardSuit == Card.Suit.Club).ToList();
         var clubone = clubCards.FirstOrDefault();
@@ -72,60 +75,96 @@ public class Dealer : MonoBehaviour
         //ラムダ式でboolを判定し、List内に判定条件に合致するかtrueかfalseで返す
         var clubCardsInHeartCard = Deck.CardDeck.Any(card => card.CardSuit == Card.Suit.Heart);
 
+        StartCoroutine(FinishDealingCards());
+    }
+
+    private IEnumerator FinishDealingCards()
+    {
         foreach (var card in Deck.CardDeck)
         {
             var cardImage = Instantiate(CardImage, cardBG);
-            //カードの文字列をフックに表示する
-            cardImage.sprite = CardAtlas.GetSprite($"Card_54");
+            //InstantiateされたcardImageからCardButtonExtensionを取得する
+            var cardButton = cardImage.gameObject.GetComponent<CardButtonExtension>();
+            //cardButtonの引数で使う表示する画像をSpriteAtlasから取得する
+            var cardSprite = CardAtlas.GetSprite($"Card_{((int)card.CardSuit * 13) + card.Number - 1}");
+            //cardButtonの引数で使う隠すようの画像をSpriteAtlasから取得する
+            var hideCarSprite = CardAtlas.GetSprite($"Card_54");
 
-            var button = cardImage.gameObject.AddComponent<Button>();
-
-
-
-            button.onClick.AddListener(() =>
+            cardButton.Initialize(cardSprite, hideCarSprite, () =>
             {
-                //ゲームのステートがChoice以外だったら帰る
-                if (concentrationGameProgressionManager.GetGameStates != ConcentrationGameProgressionManager.GameStates.Choice)
-                {
-                    return;
-                }
                 switch (ActionTurn)
                 {
-                    //Playerのターンだったら
                     case Turn.Player:
-                        Debug.Log(cardImage);
                         Player.CardChoice(card, cardImage);
-                        if (!Player.IsMyTurn)
-                        {
-                            //選択されたカードを裏向ける
-                            cardImage.sprite = CardAtlas.GetSprite($"Card_54");
-                            Player.currentChoiceCardImage.sprite = CardAtlas.GetSprite($"Card_54");
-                            ActionTurn = Turn.CPU;
-                            CPU.IsMyTurn = true;
-                Debug.Log("ｓｓｓｓｓｓ");
-                            
-                            return;
-                        }
                         break;
-                   　//CPUのターンだったら
                     case Turn.CPU:
                         CPU.CardChoice(card, cardImage);
-                        if (!CPU.IsMyTurn)
-                        {
-                            //選択されたカードを裏向ける
-                            cardImage.sprite = CardAtlas.GetSprite($"Card_54");
-                            CPU.currentChoiceCardImage.sprite = CardAtlas.GetSprite($"Card_54");
-                            ActionTurn = Turn.Player;
-                            Player.IsMyTurn = true;
-                            return;
-                        }
                         break;
-                }
-                cardImage.sprite = CardAtlas.GetSprite($"Card_{((int)card.CardSuit * 13) + card.Number - 1}");
 
+                }
             });
 
         }
 
+
+        yield return new WaitForEndOfFrame();
+
+        cardBG.GetComponent<GridLayoutGroup>().enabled = false;
+
+    }
+
+    private void TurnChange()
+    {
+        switch (ActionTurn)
+        {
+            case Turn.Player:
+                if (!Player.IsMyTurn)
+                {
+                    ActionTurn = Turn.CPU;
+                    CPU.IsMyTurn = true;
+                }
+                break;
+            case Turn.CPU:
+                if (!CPU.IsMyTurn)
+                {
+                    ActionTurn = Turn.Player;
+                    Player.IsMyTurn = true;
+                }
+                break;
+        }
+    }
+
+    private IEnumerator CardChoiceVerification(Card card, Image cardImage)
+    {
+        switch (ActionTurn)
+        {
+            //Playerのターンだったら
+            case Turn.Player:
+                Debug.Log(cardImage);
+                Player.CardChoice(card, cardImage);
+                yield return new WaitForSeconds(1f);
+                if (!Player.IsMyTurn)
+                {
+                    //選択されたカードを裏向ける
+                    cardImage.sprite = CardAtlas.GetSprite($"Card_54");
+                    Player.currentChoiceCardImage.sprite = CardAtlas.GetSprite($"Card_54");
+                    ActionTurn = Turn.CPU;
+                    CPU.IsMyTurn = true;
+                }
+                break;
+            //CPUのターンだったら
+            case Turn.CPU:
+                CPU.CardChoice(card, cardImage);
+                yield return new WaitForSeconds(1f);
+                if (!CPU.IsMyTurn)
+                {
+                    //選択されたカードを裏向ける
+                    cardImage.sprite = CardAtlas.GetSprite($"Card_54");
+                    CPU.currentChoiceCardImage.sprite = CardAtlas.GetSprite($"Card_54");
+                    ActionTurn = Turn.Player;
+                    Player.IsMyTurn = true;
+                }
+                break;
+        }
     }
 }
