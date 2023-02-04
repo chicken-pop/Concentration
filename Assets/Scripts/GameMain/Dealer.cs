@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.U2D;
 using UnityEngine.UI;
+using TMPro;
 
 public class Dealer : MonoBehaviour
 {
@@ -46,6 +47,9 @@ public class Dealer : MonoBehaviour
     [SerializeField]
     private ConcentrationPlayerBase CPU;
 
+    [SerializeField]
+    private TextMeshProUGUI turnInformationText;
+
     public ConcentrationPlayerBase GetCPUConcentrationPlayer
     {
         get { return CPU; }
@@ -60,6 +64,8 @@ public class Dealer : MonoBehaviour
     {
         get { return CPU.Score; }
     }
+
+    public ConcentrationGameProgressionManager.GameModes GameModes;
 
     public void Deal()
     {
@@ -132,6 +138,8 @@ public class Dealer : MonoBehaviour
                 }
                 break;
         }
+
+        StartCoroutine(TurnInformaiton(ActionTurn));
     }
 
     private IEnumerator CardChoiceVerification(Card card, Image cardImage)
@@ -166,5 +174,35 @@ public class Dealer : MonoBehaviour
                 }
                 break;
         }
+
+     
+
+    }
+
+
+
+    private IEnumerator TurnInformaiton(Turn turn)
+    {
+        turnInformationText.gameObject.SetActive(true);
+        switch (turn)
+        {
+            case Turn.Player:
+                turnInformationText.text = $"Next turn is Player";
+                break;
+
+            case Turn.CPU:
+                if (GameModes == 0)
+                {
+                    turnInformationText.text = $"Next turn is Player2";
+                }
+                else
+                {
+                    turnInformationText.text = $"Next turn is CPU";
+                }
+                break;
+        }
+        yield return new WaitForSeconds(0.9f);
+        turnInformationText.gameObject.SetActive(false);
+
     }
 }
