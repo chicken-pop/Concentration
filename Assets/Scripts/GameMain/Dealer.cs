@@ -150,7 +150,7 @@ public class Dealer : MonoBehaviour
             case Turn.Player:
                 Debug.Log(cardImage);
                 Player.CardChoice(card, cardImage);
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(1.2f);
                 if (!Player.IsMyTurn)
                 {
                     //選択されたカードを裏向ける
@@ -163,7 +163,7 @@ public class Dealer : MonoBehaviour
             //CPUのターンだったら
             case Turn.CPU:
                 CPU.CardChoice(card, cardImage);
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(1.2f);
                 if (!CPU.IsMyTurn)
                 {
                     //選択されたカードを裏向ける
@@ -201,7 +201,7 @@ public class Dealer : MonoBehaviour
                 }
                 break;
         }
-        yield return new WaitForSeconds(0.9f);
+        yield return new WaitForSeconds(0.8f);
         turnInformationText.gameObject.SetActive(false);
 
     }

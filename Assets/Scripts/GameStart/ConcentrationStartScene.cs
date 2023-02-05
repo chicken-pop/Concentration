@@ -3,26 +3,72 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class ConcentrationStartScene : MonoBehaviour
 {
     [SerializeField]
     private Button OnePlayerStartButton;
-     [SerializeField]
+    [SerializeField]
     private Button TwoPlayerStartButton;
+
+    private bool resourcesLoadComplete = false;
 
     private void Start()
     {
-        OnePlayerStartButton.onClick.AddListener(()=>{ 
+        GameSoundManager.Instance.Initualze();
+
+        OnePlayerStartButton.onClick.AddListener(() =>
+        {
             GameSceneUtil.Instance.SingleSceneTransration(
                 ConcentrationGameStringResource.ONCENTRATION_GAME_MAIN_SCENE,
-                ()=> OnePlayerStartButtonAction());
+                () => OnePlayerStartButtonAction());
         });
 
-         TwoPlayerStartButton.onClick.AddListener(()=>{ 
+        TwoPlayerStartButton.onClick.AddListener(() =>
+        {
             GameSceneUtil.Instance.SingleSceneTransration(
                 ConcentrationGameStringResource.ONCENTRATION_GAME_MAIN_SCENE);
         });
+
+        StartCoroutine(resourcesLoad());
+
+        StartCoroutine(startBGM());
+    }
+
+    IEnumerator resourcesLoad()
+    {
+        var bgmLoadhandle = Addressables.LoadAssetsAsync<AudioClip>("BGM", null);
+        yield return bgmLoadhandle;
+
+        if (bgmLoadhandle.Status == AsyncOperationStatus.Succeeded)
+        {
+            for (int i = 0; i < bgmLoadhandle.Result.Count; i++)
+            {
+                GameSoundManager.Instance.SetBGMAudioClips(bgmLoadhandle.Result[i]);
+            }
+        }
+
+        Addressables.Release(bgmLoadhandle);
+
+        var seLoadhandle = Addressables.LoadAssetsAsync<AudioClip>("SE", null);
+        yield return seLoadhandle;
+        for(int i = 0; i < seLoadhandle.Result.Count; i++)
+        {
+            GameSoundManager.Instance.SetSEAudioClips(seLoadhandle.Result[i]);
+        }
+
+        Addressables.Release(seLoadhandle);
+        resourcesLoadComplete = true;
+
+    }
+
+    IEnumerator startBGM()
+    {
+        yield return new WaitUntil(()=> resourcesLoadComplete);
+
+        GameSoundManager.Instance.PlayBGM(GameSoundManager.BGMTypes.GameStart);
     }
 
     /// <summary>
@@ -33,7 +79,7 @@ public class ConcentrationStartScene : MonoBehaviour
         //GameMain‚É‚¢‚éConcentrationGameProgressionManager‚ÌŽæ“¾
         var gameProgressionManagerGameObject =
             GameSceneUtil.Instance.NextSceneRootGetGameObjects.
-            Where(x=>x.GetComponent<ConcentrationGameProgressionManager>()).FirstOrDefault();
+            Where(x => x.GetComponent<ConcentrationGameProgressionManager>()).FirstOrDefault();
 
         if (gameProgressionManagerGameObject != null)
         {

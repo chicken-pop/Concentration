@@ -35,6 +35,7 @@ public class ConcentrationPlayerBase : MonoBehaviour
         //1枚名選択したカードの処理
         if (currentChoiceCard == null)
         {
+            GameSoundManager.Instance.PlaySE(GameSoundManager.SETypes.CardOpen);
             currentChoiceCard = choiceCard;
             currentChoiceCardImage = choiceCardImage;
             IsMyTurn = true;
@@ -46,7 +47,7 @@ public class ConcentrationPlayerBase : MonoBehaviour
         {
             return;
         }
-
+        GameSoundManager.Instance.PlaySE(GameSoundManager.SETypes.CardOpen);
 
         if (currentChoiceCard.Number == choiceCard.Number)
         {
@@ -55,7 +56,7 @@ public class ConcentrationPlayerBase : MonoBehaviour
         }
         else
         {
-            //未死した時の処理
+            //ミスした時の処理
             StartCoroutine(MissChoice(choiceCardImage));
         }
 
@@ -86,6 +87,8 @@ public class ConcentrationPlayerBase : MonoBehaviour
         //自分のターンは終了
         currentChoiceCard = null;
         IsMyTurn = false;
+
+        GameSoundManager.Instance.PlaySE(GameSoundManager.SETypes.CardClone);
         //カード選択が終わった際のコールバック
         CardChoiceCallback?.Invoke();
 

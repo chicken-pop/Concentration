@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: c46c223b50522224788742ca95a5c709
+  m_SerializeEntries:
+  - m_GUID: 3382338414bea4147927c6c7b102c8af
+    m_Address: Assets/Music/BGM/Doubt.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - BGM
+  - m_GUID: a9a1e1e184e2c2747978ab6b1caa9ce1
+    m_Address: "Assets/Music/BGM/\u30C8\u30E9\u30F3\u30D7\u30FB\u30B2\u30FC\u30E0.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - BGM
+  - m_GUID: 42e3747f17be8c44d931e7e363ca78d3
+    m_Address: Assets/Music/SE/flipcard-91468.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SE
+  - m_GUID: 9683ae988421c5e49a36aa74c46b7b4d
+    m_Address: "Assets/Music/SE/\u30AB\u30FC\u30C9\u3092\u3081\u304F\u308B.mp3"
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SE
+  - m_GUID: 2e1e9506f5904a64b81744324fb7cd50
+    m_Address: Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Explosions/CFXR2
+      WW Explosion.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - GameMainFX
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 6a9bc721fae1ff14d985374336033dde, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ea31906203dcba0449299879a74c1aa6, type: 2}
+    - {fileID: 11400000, guid: 99fead93be0b9a14491773b4a6e1e3d1, type: 2}
